@@ -34,7 +34,7 @@ const page = () => {
       const userId = userCredential.user.uid; // Firebase generated user ID
 
       const response = await fetch(
-        "https://socialmediaapp-431315.ue.r.appspot.com/user/add",
+        process.env.NEXT_PUBLIC_APPENGINE_URL + "/user/add",
         {
           method: "PUT",
           headers: {

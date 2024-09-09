@@ -8,21 +8,22 @@ import {
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCfWWAF1LBbR8N2CublnWjtARWnvvO8rTo",
-  authDomain: "socialmediaapp-431315.firebaseapp.com",
-  projectId: "socialmediaapp-431315",
-  storageBucket: "socialmediaapp-431315.appspot.com",
-  messagingSenderId: "1099275205469",
-  appId: "1:1099275205469:web:db76c439abdcd27a8e06b4",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
-const LOCAL_STORAGE_KEY = "appid:authUser";
+const storage = getStorage(app);
+const LOCAL_STORAGE_KEY = String(process.env.NEXT_PUBLIC_LOCAL_USER_KEY);
 
 // Custom hook to use authentication state
 const useAuth = () => {
@@ -96,4 +97,4 @@ const handleLogout = async () => {
   localStorage.removeItem(LOCAL_STORAGE_KEY); // Clear local storage
 };
 
-export { auth, db, useAuth, useGeneralAuth, handleLogout };
+export { auth, db, storage, useAuth, useGeneralAuth, handleLogout };
