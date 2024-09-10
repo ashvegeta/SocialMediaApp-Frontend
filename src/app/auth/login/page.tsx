@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -12,6 +12,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const router = useRouter();
   const { user, loading } = useGeneralAuth();
+  // const LOCAL_STORAGE_KEY = String(process.env.NEXT_PUBLIC_LOCAL_USER_KEY);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,13 +25,13 @@ const LoginPage = () => {
         password
       );
       console.log("User signed in successfully\n" + userCredential);
-      localStorage.setItem(
-        "appid:authUser",
-        JSON.stringify(userCredential.user)
-      );
+      // localStorage.setItem(
+      //   LOCAL_STORAGE_KEY,
+      //   JSON.stringify(userCredential.user)
+      // );
       router.push("/");
     } catch (error) {
-      localStorage.removeItem("appid:authUser");
+      // localStorage.removeItem(LOCAL_STORAGE_KEY);
       console.log("Error signing in " + error);
     }
   };

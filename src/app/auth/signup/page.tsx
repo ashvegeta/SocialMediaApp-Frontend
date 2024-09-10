@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { auth, useGeneralAuth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 
 const SignUpPage = () => {
@@ -12,6 +12,8 @@ const SignUpPage = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const router = useRouter();
+  // const LOCAL_STORAGE_KEY = String(process.env.NEXT_PUBLIC_LOCAL_USER_KEY);
+  useGeneralAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -55,11 +57,10 @@ const SignUpPage = () => {
       }
 
       // add to localstorage and push to protected page router
-      localStorage.setItem(
-        "appid:authUser",
-        JSON.stringify(userCredential.user)
-      );
-      router.push("/");
+      // localStorage.setItem(
+      //   LOCAL_STORAGE_KEY,
+      //   JSON.stringify(userCredential.user)
+      // );
 
       // If successful, clear the form and display a success message
       setEmail("");
@@ -67,8 +68,9 @@ const SignUpPage = () => {
       setUsername("");
       setConfirmPassword("");
       console.log("User signed up successfully:", userCredential.user);
+      router.push("/");
     } catch (err: any) {
-      localStorage.removeItem("appid:authUser");
+      // localStorage.removeItem(LOCAL_STORAGE_KEY);
       setError(err.message);
       console.error("Error signing up:", err);
     }
