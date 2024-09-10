@@ -69,7 +69,7 @@ const LoginPage = () => {
         </form>
 
         <p className="link-text">
-          Don't have an account? <Link href="/auth/signup">Sign up</Link>
+          Don&apos;t have an account? <Link href="/auth/signup">Sign up</Link>
         </p>
       </div>
     );
