@@ -70,14 +70,16 @@ const useAuth = () => {
 };
 
 const useGeneralAuth = () => {
-  const [user, setUser] = useState<User | null>(() => {
-    const storedUser = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
-
-  const [loading, setLoading] = useState(user ? false : true);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const storedUser = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (storedUser) {
+      setLoading(false);
+      setUser(JSON.parse(storedUser));
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser)
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(firebaseUser));

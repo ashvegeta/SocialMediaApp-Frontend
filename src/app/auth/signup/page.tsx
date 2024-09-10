@@ -13,7 +13,7 @@ const SignUpPage = () => {
   const [error, setError] = useState<string>("");
   const router = useRouter();
   // const LOCAL_STORAGE_KEY = String(process.env.NEXT_PUBLIC_LOCAL_USER_KEY);
-  useGeneralAuth();
+  const { user, loading } = useGeneralAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -76,57 +76,65 @@ const SignUpPage = () => {
     }
   };
 
-  return (
-    <div>
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSubmit} id="signup-form">
-        <div className="form-group" id="signup-username">
-          <label> User Name : </label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-            required
-          />
-        </div>
+  if (loading) {
+    return <div>loading...</div>;
+  }
 
-        <div className="form-group" id="signup-email">
-          <label> Email : </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            required
-          />
-        </div>
+  if (user) {
+    router.push("/");
+  } else {
+    return (
+      <div>
+        <h2>Sign Up</h2>
+        <form onSubmit={handleSubmit} id="signup-form">
+          <div className="form-group" id="signup-username">
+            <label> User Name : </label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Username"
+              required
+            />
+          </div>
 
-        <div className="form-group" id="signup-password">
-          <label> Password : </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            required
-          />
-        </div>
+          <div className="form-group" id="signup-email">
+            <label> Email : </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              required
+            />
+          </div>
 
-        <div className="form-group" id="signup-confirm-password">
-          <label> Confirm Password : </label>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm Password"
-            required
-          />
-        </div>
-        <button type="submit">Sign Up</button>
-      </form>
-    </div>
-  );
+          <div className="form-group" id="signup-password">
+            <label> Password : </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              required
+            />
+          </div>
+
+          <div className="form-group" id="signup-confirm-password">
+            <label> Confirm Password : </label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm Password"
+              required
+            />
+          </div>
+          <button type="submit">Sign Up</button>
+        </form>
+      </div>
+    );
+  }
 };
 
 export default SignUpPage;
