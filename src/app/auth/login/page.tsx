@@ -7,7 +7,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, useGeneralAuth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 
-const page = () => {
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
@@ -76,4 +76,4 @@ const page = () => {
   }
 };
 
-export default page;
+export default LoginPage;
