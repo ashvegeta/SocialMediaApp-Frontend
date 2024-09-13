@@ -24,6 +24,7 @@ const LoginPage = () => {
         email,
         password
       );
+
       console.log("User signed in successfully\n" + userCredential);
       // localStorage.setItem(
       //   LOCAL_STORAGE_KEY,

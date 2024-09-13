@@ -68,7 +68,7 @@ const SignUpPage = () => {
       setUsername("");
       setConfirmPassword("");
       console.log("User signed up successfully:", userCredential.user);
-      router.push("/");
+      router.push("/preferences");
     } catch (err: any) {
       // localStorage.removeItem(LOCAL_STORAGE_KEY);
       setError(err.message);
