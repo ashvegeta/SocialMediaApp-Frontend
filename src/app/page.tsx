@@ -116,7 +116,7 @@ export default function Home() {
           <br />
           {filteredPosts.length > 0 ? (
             filteredPosts.map((post, index) => (
-              <div>
+              <div key={index}>
                 {JSON.stringify(post)}
                 <br />
                 <br />
