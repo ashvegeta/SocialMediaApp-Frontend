@@ -37,66 +37,89 @@ export default function Home() {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      if (!user || loading || userTags.length === 0) return; // Wait until user is loaded and has preferences
+      if (loading) return; // Ensure the auth state has been checked
 
-      let posts: Post[] = []; // Explicitly type the posts array
-      let fetchedAll = false; // Flag to check if all users are fetched
+      let posts: Post[] = [];
+      const postIds = new Set<string>();
 
       try {
-        // Repeat until we have enough posts or fetched all public users
-        while (posts.length < 5 && !fetchedAll) {
-          let lastUserDoc = lastFetchedUser; // Start after this document in the next batch
+        if (user && userTags.length > 0) {
+          // Authenticated: Fetch posts based on user preferences
+          let fetchedAll = false;
+          let lastUserDoc = lastFetchedUser;
 
-          // Step 1: Query to get public users with a limit, and pagination
-          const usersCollection = collection(db, "users");
-          const usersQuery = lastUserDoc
-            ? query(
-                usersCollection,
-                where("Visibility", "==", "public"),
-                startAfter(lastUserDoc),
-                limit(10) // Fetch 10 users in each batch
-              )
-            : query(
-                usersCollection,
-                where("Visibility", "==", "public"),
-                limit(10)
+          while (posts.length < 5 && !fetchedAll) {
+            const usersCollection = collection(db, "users");
+            const usersQuery = lastUserDoc
+              ? query(
+                  usersCollection,
+                  where("Visibility", "==", "public"),
+                  startAfter(lastUserDoc),
+                  limit(10)
+                )
+              : query(
+                  usersCollection,
+                  where("Visibility", "==", "public"),
+                  limit(10)
+                );
+
+            const usersSnapshot = await getDocs(usersQuery);
+
+            if (usersSnapshot.empty) {
+              fetchedAll = true;
+              break;
+            }
+
+            lastUserDoc = usersSnapshot.docs[usersSnapshot.docs.length - 1];
+            setLastFetchedUser(lastUserDoc);
+
+            usersSnapshot.forEach((userDoc) => {
+              const userData = userDoc.data();
+              const userPosts: Post[] = userData.Posts || [];
+
+              const matchedPosts = userPosts.filter((post) =>
+                post.Tags?.some((tag) => userTags.includes(tag))
               );
 
-          const usersSnapshot = await getDocs(usersQuery);
-          // If there are no more users, set fetchedAll to true
-          if (usersSnapshot.empty) {
-            fetchedAll = true;
-            break;
+              matchedPosts.forEach((post) => {
+                if (!postIds.has(post.PostId)) {
+                  posts.push(post);
+                  postIds.add(post.PostId);
+                }
+              });
+            });
+
+            if (posts.length >= 5) break;
           }
+        } else {
+          // Non-authenticated: Fetch 5 random posts
+          const randomQuery = query(
+            collection(db, "users"),
+            where("Visibility", "==", "public"),
+            limit(10) // Fetch some public users to get random posts
+          );
+          const usersSnapshot = await getDocs(randomQuery);
 
-          // Update the last fetched user for pagination
-          setLastFetchedUser(usersSnapshot.docs[usersSnapshot.docs.length - 1]);
-
-          // Step 2: Iterate over fetched users and filter posts
           usersSnapshot.forEach((userDoc) => {
             const userData = userDoc.data();
-            const userPosts: Post[] = userData.Posts || []; // Ensure Posts is always an array
+            const userPosts: Post[] = userData.Posts || [];
 
-            // Filter posts by user's preferences
-            const matchedPosts = userPosts.filter((post) =>
-              post.Tags?.some((tag) => userTags.includes(tag))
-            );
+            userPosts.forEach((post) => {
+              if (!postIds.has(post.PostId) && posts.length < 5) {
+                posts.push(post);
+                postIds.add(post.PostId);
+              }
+            });
 
-            // Add matched posts to the result array
-            posts.push(...matchedPosts);
+            if (posts.length >= 5) return;
           });
-
-          // Step 3: Limit the total posts to 5
-          if (posts.length >= 5) break; // Stop fetching more users if we have enough posts
         }
 
         setFilteredPosts(posts.slice(0, 5)); // Set a maximum of 5 posts
-        setLoadingPosts(false); // Update loading state after fetching posts
-
-        console.log("Filtered Posts:", posts); // Debugging log
+        setLoadingPosts(false);
       } catch (error) {
         console.error("Error fetching posts:", error);
-        setLoadingPosts(false); // Ensure loading state is updated even if there's an error
+        setLoadingPosts(false);
       }
     };
 
@@ -112,22 +135,23 @@ export default function Home() {
           <h2>Welcome, {user.email}!</h2>
           <Link href={`/profile/${user.uid}`}>Go to Profile</Link>
           <LogoutButton />
-          <br />
-          <br />
-          {filteredPosts.length > 0 ? (
-            filteredPosts.map((post, index) => (
-              <div key={index}>
-                {JSON.stringify(post)}
-                <br />
-                <br />
-              </div>
-            ))
-          ) : (
-            <p>No posts available.</p>
-          )}
         </div>
       ) : (
-        <p>Please log in to see more content.</p>
+        <p>Explore some random posts below!</p>
+      )}
+
+      <br />
+      <br />
+      {filteredPosts.length > 0 ? (
+        filteredPosts.map((post, _) => (
+          <div key={post.PostId}>
+            {JSON.stringify(post)}
+            <br />
+            <br />
+          </div>
+        ))
+      ) : (
+        <p>No posts available.</p>
       )}
     </div>
   );
