@@ -9,6 +9,9 @@ const NotificationsPage = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loadingNotifications, setLoadingNotifications] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [handledNotifications, setHandledNotifications] = useState<string[]>(
+    []
+  ); // Track handled notifications
 
   useEffect(() => {
     if (!user) return; // User is not authenticated
@@ -44,6 +47,67 @@ const NotificationsPage = () => {
     return () => unsubscribe();
   }, [user, loading]); // Only run when user or loading state changes
 
+  const handleAcceptRequest = async (
+    fromUserId: string,
+    notificationId: string
+  ) => {
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_APPENGINE_URL + "/conn/add",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            From: fromUserId,
+            To: user?.uid,
+            ConnStatus: "accepted",
+          }),
+        }
+      );
+      if (response.ok) {
+        console.log("Connection accepted successfully!");
+        // Update the state to mark the notification as handled
+        setHandledNotifications((prev) => [...prev, notificationId]);
+      } else {
+        console.error("Error accepting connection");
+      }
+    } catch (error) {
+      console.error("Error handling connection request:", error);
+    }
+  };
+
+  const handleDeleteRequest = async (
+    fromUserId: string,
+    notificationId: string
+  ) => {
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_APPENGINE_URL + "/conn/delete",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            From: fromUserId,
+            To: user?.uid,
+          }),
+        }
+      );
+      if (response.ok) {
+        console.log("Connection deleted successfully!");
+        // Update the state to mark the notification as handled
+        setHandledNotifications((prev) => [...prev, notificationId]);
+      } else {
+        console.error("Error deleting connection");
+      }
+    } catch (error) {
+      console.error("Error handling connection request:", error);
+    }
+  };
+
   if (loading || loadingNotifications) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -53,7 +117,47 @@ const NotificationsPage = () => {
       {notifications.length > 0 ? (
         <ul>
           {notifications.map((notification, index) => (
-            <li key={index}>{JSON.stringify(notification)}</li>
+            <li key={index}>
+              {notification.CType === "connRequest" ? (
+                <div>
+                  {handledNotifications.includes(notification.NID) ? (
+                    // Show success message after handling the request
+                    <p>
+                      You are now friends with {notification.MetaData.UserName}
+                    </p>
+                  ) : (
+                    // Show the accept and delete buttons if the request is not handled
+                    <div>
+                      <p>
+                        Connection Request from {notification.MetaData.UserName}
+                      </p>
+                      <button
+                        onClick={() =>
+                          handleAcceptRequest(
+                            notification.MetaData.From,
+                            notification.NID
+                          )
+                        }
+                      >
+                        Accept
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleDeleteRequest(
+                            notification.MetaData.From,
+                            notification.NID
+                          )
+                        }
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p>{JSON.stringify(notification)}</p>
+              )}
+            </li>
           ))}
         </ul>
       ) : (
