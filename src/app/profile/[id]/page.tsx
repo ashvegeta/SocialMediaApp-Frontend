@@ -69,7 +69,7 @@ const ProfilePage = () => {
           <div>
             <h3>
               <br />
-              User's Posts
+              User&apos;s Posts
             </h3>
             {posts.length > 0 ? (
               posts.map((post) => (
