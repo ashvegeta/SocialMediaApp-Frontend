@@ -38,31 +38,34 @@ const SearchPage = () => {
   };
 
   return (
-    <div>
+    <div className="search-page-container">
       <h2>Search Users</h2>
-      <form onSubmit={handleSearch}>
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search by username..."
-        />
-        <button type="submit">Search</button>
+      <form onSubmit={handleSearch} className="search-form">
+        <div className="search-bar">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by username..."
+            className="search-input"
+          />
+          <button type="submit" className="search-button">
+            Search
+          </button>
+        </div>
       </form>
 
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
 
       {searchResults.length > 0 ? (
-        <ul>
+        <ul className="search-results">
           {searchResults.map((user: any, index: number) => (
-            <li key={index}>
+            <li key={index} className="search-result-item">
               <p>{user.EmailId}</p>
               <p>{user.UserName}</p>
               <p>{user.Visibility}</p>
               <p>{JSON.stringify(user.Posts)}</p>
-              <br />
-              <br />
             </li>
           ))}
         </ul>

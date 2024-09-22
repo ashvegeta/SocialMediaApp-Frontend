@@ -52,6 +52,7 @@ const NotificationsPage = () => {
     notificationId: string
   ) => {
     try {
+      // Accept the connection request and handle notifications in the backend
       const response = await fetch(
         process.env.NEXT_PUBLIC_APPENGINE_URL + "/conn/add",
         {
@@ -62,13 +63,15 @@ const NotificationsPage = () => {
           body: JSON.stringify({
             From: fromUserId,
             To: user?.uid,
+            NID: notificationId,
             ConnStatus: "accepted",
           }),
         }
       );
+
       if (response.ok) {
         console.log("Connection accepted successfully!");
-        // Update the state to mark the notification as handled
+        // Mark the notification as handled
         setHandledNotifications((prev) => [...prev, notificationId]);
       } else {
         console.error("Error accepting connection");
@@ -99,6 +102,25 @@ const NotificationsPage = () => {
       if (response.ok) {
         console.log("Connection deleted successfully!");
         // Update the state to mark the notification as handled
+
+        const trailRes = await fetch(
+          process.env.NEXT_PUBLIC_APPENGINE_URL + "/notification/delete",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              UserId: user?.uid,
+              NID: notificationId,
+            }),
+          }
+        );
+
+        if (!trailRes.ok) {
+          console.error("Error deleting notification " + trailRes.body);
+        }
+
         setHandledNotifications((prev) => [...prev, notificationId]);
       } else {
         console.error("Error deleting connection");

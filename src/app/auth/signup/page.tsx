@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, useGeneralAuth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const SignUpPage = () => {
   const [email, setEmail] = useState<string>("");
@@ -84,54 +85,66 @@ const SignUpPage = () => {
     router.push("/");
   } else {
     return (
-      <div>
-        <h2>Sign Up</h2>
-        <form onSubmit={handleSubmit} id="signup-form">
-          <div className="form-group" id="signup-username">
-            <label> User Name : </label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username"
-              required
-            />
-          </div>
+      <div className="signup-container">
+        <div className="signup-card">
+          <h2 className="signup-title">Sign Up</h2>
+          <form onSubmit={handleSubmit} id="signup-form">
+            <div className="form-group" id="signup-username">
+              <label> User Name </label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                // placeholder="Username"
+                required
+                className="form-input"
+              />
+            </div>
 
-          <div className="form-group" id="signup-email">
-            <label> Email : </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              required
-            />
-          </div>
+            <div className="form-group" id="signup-email">
+              <label> Email </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                // placeholder="Email"
+                required
+                className="form-input"
+              />
+            </div>
 
-          <div className="form-group" id="signup-password">
-            <label> Password : </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              required
-            />
-          </div>
+            <div className="form-group" id="signup-password">
+              <label> Password </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                // placeholder="Password"
+                required
+                className="form-input"
+              />
+            </div>
 
-          <div className="form-group" id="signup-confirm-password">
-            <label> Confirm Password : </label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm Password"
-              required
-            />
-          </div>
-          <button type="submit">Sign Up</button>
-        </form>
+            <div className="form-group" id="signup-confirm-password">
+              <label> Confirm Password </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                // placeholder="Confirm Password"
+                required
+                className="form-input"
+              />
+            </div>
+            <button className="signup-button" type="submit">
+              Sign Up
+            </button>
+          </form>
+
+          <p className="link-text">
+            Have an account? <Link href="/auth/login">Login</Link>
+          </p>
+        </div>
       </div>
     );
   }

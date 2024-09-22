@@ -20,6 +20,27 @@ const PreferencesPage = () => {
     "space",
     "science",
     "gaming",
+    "music",
+    "movies",
+    "fitness",
+    "photography",
+    "travel",
+    "food",
+    "fashion",
+    "technology",
+    "art",
+    "history",
+    "health",
+    "coding",
+    "self-improvement",
+    "memes",
+    "comedy",
+    "design",
+    "mental health",
+    "entrepreneurship",
+    "books",
+    "startups",
+    "outdoor activities",
   ];
 
   const handleTagSelection = (tag: string) => {
@@ -61,23 +82,26 @@ const PreferencesPage = () => {
     router.push("/");
   } else {
     return (
-      <div>
+      <div className="preferences-container">
         <h2>Select Your Preferences</h2>
-        <form onSubmit={handleSubmit}>
-          {availableTags.map((tag) => (
-            <div key={tag}>
-              <input
-                type="checkbox"
-                id={tag}
-                value={tag}
-                onChange={() => handleTagSelection(tag)}
-                checked={selectedTags.includes(tag)}
-              />
-              <label htmlFor={tag}>{tag}</label>
-            </div>
-          ))}
+        <form className="preferences-form" onSubmit={handleSubmit}>
+          <div className="tag-cloud">
+            {availableTags.map((tag) => (
+              <div
+                key={tag}
+                className={`tag-item ${
+                  selectedTags.includes(tag) ? "selected" : ""
+                }`}
+                onClick={() => handleTagSelection(tag)}
+              >
+                {tag}
+              </div>
+            ))}
+          </div>
 
-          <button type="submit">Save Preferences</button>
+          <button type="submit" className="save-button">
+            Save Preferences
+          </button>
         </form>
       </div>
     );

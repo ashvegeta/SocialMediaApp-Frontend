@@ -51,59 +51,64 @@ const ProfilePage = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div>
+    <div className="profile-page">
       <h2>User Profile</h2>
       {profile ? (
-        <div>
-          <p>
-            <strong>Username:</strong> {profile.UserName}
-          </p>
-          <p>
-            <strong>Email:</strong> {profile.EmailId}
-          </p>
-          <p>
-            <strong>Visibility:</strong> {profile.Visibility}
-          </p>
+        <div className="profile-header">
+          <div className="profile-info">
+            <div className="profile-pic">
+              {/* Placeholder profile picture */}
+              <img
+                src="https://via.placeholder.com/150"
+                alt="Profile picture"
+                className="profile-pic-img"
+              />
+            </div>
+            <div className="profile-details">
+              <p>
+                <strong>{profile.UserName}</strong>
+              </p>
+              <p>{profile.EmailId}</p>
+              <p>
+                <em>{profile.Visibility}</em>
+              </p>
+            </div>
+          </div>
+
+          <div className="aesthetic-line"></div>
 
           {/* Display User's Posts */}
-          <div>
-            <h3>
-              <br />
-              User&apos;s Posts
-            </h3>
+          <div className="user-posts-section">
+            <h3>User&apos;s Posts</h3>
             {posts.length > 0 ? (
-              posts.map((post) => (
-                <div
-                  key={post.PostId}
-                  style={{
-                    border: "1px solid #ddd",
-                    marginBottom: "1rem",
-                    padding: "1rem",
-                  }}
-                >
-                  <p>
-                    <strong>Content:</strong> {post.Content}
-                  </p>
-                  {post.MediaURL && (
-                    <div>
-                      <strong>Media:</strong>
-                      <br />
+              <div className="post-grid">
+                {posts.map((post) => (
+                  <div className="post-item" key={post.PostId}>
+                    {post.MediaURL ? (
                       <img
                         src={post.MediaURL}
                         alt="Post media"
-                        style={{ maxWidth: "40%" }}
+                        className="post-media"
                       />
+                    ) : (
+                      <div className="post-placeholder">
+                        <p>No Media</p>
+                      </div>
+                    )}
+                    <div className="post-details">
+                      <p>
+                        <strong>Tags:</strong> {post.Tags.join(", ")}
+                      </p>
+                      <p>
+                        <strong>Created At:</strong>{" "}
+                        {new Date(
+                          post.CreatedAt.seconds * 1000
+                        ).toLocaleString()}
+                      </p>
                     </div>
-                  )}
-                  <p>
-                    <strong>Tags:</strong> {post.Tags.join(", ")}
-                  </p>
-                  <p>
-                    <strong>Created At:</strong>{" "}
-                    {new Date(post.CreatedAt.seconds * 1000).toLocaleString()}
-                  </p>
-                </div>
-              ))
+                  </div>
+                ))}
+              </div>
             ) : (
               <p>No posts available.</p>
             )}

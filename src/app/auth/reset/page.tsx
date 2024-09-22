@@ -47,27 +47,32 @@ const ResetPasswordPage = () => {
   }
 
   return (
-    <div>
-      <h3>Reset Your Password</h3>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Send Reset Email</button>
-      </form>
+    <div className="reset-container">
+      <div className="reset-card">
+        <h3 className="reset-title">Reset Your Password</h3>
+        <form onSubmit={handleSubmit} id="reset-form">
+          <div className="form-group" id="reset-email">
+            <label>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="form-input"
+              required
+            />
+          </div>
+          <button type="submit" className="reset-button">
+            Send Reset Email
+          </button>
+        </form>
 
-      {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <p className="link-text">
-        Remember your password? <a href="/auth/login">Login here</a>
-      </p>
+        <p className="link-text">
+          Remember your password? <a href="/auth/login">Login here</a>
+        </p>
+      </div>
     </div>
   );
 };

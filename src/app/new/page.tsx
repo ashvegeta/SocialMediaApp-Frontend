@@ -80,23 +80,41 @@ const NewPostPage = () => {
   };
 
   return (
-    <div>
+    <div className="new-post-container">
       <h2>Create New Post</h2>
-      <form onSubmit={handleSubmit}>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="What's on your mind?"
-          required
-        />
-        <input type="file" onChange={handleFileChange} />
-        <input
-          type="text"
-          value={tags.join(", ")}
-          onChange={(e) => setTags(e.target.value.split(","))}
-          placeholder="Tags (comma separated)"
-        />
-        <button type="submit" disabled={loading}>
+      <form className="new-post-form" onSubmit={handleSubmit}>
+        <div className="input-group">
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="What's on your mind?"
+            className="content-textarea"
+            required
+          />
+        </div>
+
+        <div className="input-group file-upload">
+          <label htmlFor="file-upload" className="custom-file-upload">
+            <span role="img" aria-label="upload">
+              📷
+            </span>{" "}
+            Upload Media
+          </label>
+          <input id="file-upload" type="file" onChange={handleFileChange} />
+          {file && <p className="file-name">Selected: {file.name}</p>}
+        </div>
+
+        <div className="input-group">
+          <input
+            type="text"
+            value={tags.join(", ")}
+            onChange={(e) => setTags(e.target.value.split(","))}
+            placeholder="Tags (comma separated)"
+            className="tags-input"
+          />
+        </div>
+
+        <button className="post-button" type="submit" disabled={loading}>
           {loading ? "Posting..." : "Post"}
         </button>
       </form>
