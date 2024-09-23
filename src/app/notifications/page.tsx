@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db, useAuth } from "@/lib/firebase"; // Custom hook to get the current user (as implemented before)
 import Navbar from "@/components/Navbar";
+import { useRouter } from "next/navigation";
 
 const NotificationsPage = () => {
   const { user, loading } = useAuth(); // Get the authenticated user
@@ -13,6 +14,7 @@ const NotificationsPage = () => {
   const [handledNotifications, setHandledNotifications] = useState<string[]>(
     []
   ); // Track handled notifications
+  const router = useRouter();
 
   useEffect(() => {
     if (!user) return; // User is not authenticated
@@ -131,76 +133,82 @@ const NotificationsPage = () => {
     }
   };
 
-  if (loading || loadingNotifications) return <p>Loading...</p>;
+  if (user && (loading || loadingNotifications)) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
-  return (
-    <div>
-      <Navbar User={user} />
-      <div className="notification-container">
-        <h2 className="notification-heading">Notifications</h2>
-        {notifications.length > 0 ? (
-          <ul className="notification-list">
-            {notifications.map((notification, index) => (
-              <li key={index} className="notification-item">
-                {notification.CType === "connRequest" ? (
-                  <div className="notification-request">
-                    {handledNotifications.includes(notification.NID) ? (
-                      <p className="notification-accepted">
-                        You are now friends with{" "}
-                        {notification.MetaData.UserName}
-                      </p>
-                    ) : (
-                      <div className="notification-actions">
-                        <p className="notification-message">
-                          Connection Request from{" "}
+  if (user) {
+    return (
+      <div>
+        <Navbar User={user} />
+        <div className="notification-container">
+          <h2 className="notification-heading">Notifications</h2>
+          {notifications.length > 0 ? (
+            <ul className="notification-list">
+              {notifications.map((notification, index) => (
+                <li key={index} className="notification-item">
+                  {notification.CType === "connRequest" ? (
+                    <div className="notification-request">
+                      {handledNotifications.includes(notification.NID) ? (
+                        <p className="notification-accepted">
+                          You are now friends with{" "}
                           {notification.MetaData.UserName}
                         </p>
-                        <button
-                          className="notification-btn accept-btn"
-                          onClick={() =>
-                            handleAcceptRequest(
-                              notification.MetaData.From,
-                              notification.NID
-                            )
-                          }
-                        >
-                          Accept
-                        </button>
-                        <button
-                          className="notification-btn delete-btn"
-                          onClick={() =>
-                            handleDeleteRequest(
-                              notification.MetaData.From,
-                              notification.NID
-                            )
-                          }
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    )}
-                    <p className="notification-timestamp">
-                      {new Date(notification.TimeStamp).toLocaleString()}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="notification-detail">
-                    <p className="notification-meta">{notification.Content}</p>
-                    <p className="notification-timestamp">
-                      {new Date(notification.TimeStamp).toLocaleString()}
-                    </p>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="notification-empty">No notifications found.</p>
-        )}
+                      ) : (
+                        <div className="notification-actions">
+                          <p className="notification-message">
+                            Connection Request from{" "}
+                            {notification.MetaData.UserName}
+                          </p>
+                          <button
+                            className="notification-btn accept-btn"
+                            onClick={() =>
+                              handleAcceptRequest(
+                                notification.MetaData.From,
+                                notification.NID
+                              )
+                            }
+                          >
+                            Accept
+                          </button>
+                          <button
+                            className="notification-btn delete-btn"
+                            onClick={() =>
+                              handleDeleteRequest(
+                                notification.MetaData.From,
+                                notification.NID
+                              )
+                            }
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                      <p className="notification-timestamp">
+                        {new Date(notification.TimeStamp).toLocaleString()}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="notification-detail">
+                      <p className="notification-meta">
+                        {notification.Content}
+                      </p>
+                      <p className="notification-timestamp">
+                        {new Date(notification.TimeStamp).toLocaleString()}
+                      </p>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="notification-empty">No notifications found.</p>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    router.push("/");
+  }
 };
 
 export default NotificationsPage;
