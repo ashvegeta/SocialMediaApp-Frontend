@@ -134,26 +134,25 @@ const NotificationsPage = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div>
-      <h2>Notifications</h2>
+    <div className="notification-container">
+      <h2 className="notification-heading">Notifications</h2>
       {notifications.length > 0 ? (
-        <ul>
+        <ul className="notification-list">
           {notifications.map((notification, index) => (
-            <li key={index}>
+            <li key={index} className="notification-item">
               {notification.CType === "connRequest" ? (
-                <div>
+                <div className="notification-request">
                   {handledNotifications.includes(notification.NID) ? (
-                    // Show success message after handling the request
-                    <p>
+                    <p className="notification-accepted">
                       You are now friends with {notification.MetaData.UserName}
                     </p>
                   ) : (
-                    // Show the accept and delete buttons if the request is not handled
-                    <div>
-                      <p>
+                    <div className="notification-actions">
+                      <p className="notification-message">
                         Connection Request from {notification.MetaData.UserName}
                       </p>
                       <button
+                        className="notification-btn accept-btn"
                         onClick={() =>
                           handleAcceptRequest(
                             notification.MetaData.From,
@@ -164,6 +163,7 @@ const NotificationsPage = () => {
                         Accept
                       </button>
                       <button
+                        className="notification-btn delete-btn"
                         onClick={() =>
                           handleDeleteRequest(
                             notification.MetaData.From,
@@ -175,15 +175,23 @@ const NotificationsPage = () => {
                       </button>
                     </div>
                   )}
+                  <p className="notification-timestamp">
+                    {new Date(notification.TimeStamp).toLocaleString()}
+                  </p>
                 </div>
               ) : (
-                <p>{JSON.stringify(notification)}</p>
+                <div className="notification-detail">
+                  <p className="notification-meta">{notification.Content}</p>
+                  <p className="notification-timestamp">
+                    {new Date(notification.TimeStamp).toLocaleString()}
+                  </p>
+                </div>
               )}
             </li>
           ))}
         </ul>
       ) : (
-        <p>No notifications found.</p>
+        <p className="notification-empty">No notifications found.</p>
       )}
     </div>
   );
