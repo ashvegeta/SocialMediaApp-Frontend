@@ -995,7 +995,58 @@ textarea {
   color: #333;
 }
 
+.navbar-links.mobile {
+  display: block;
+  position: absolute;
+  top: 30px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 1);
+  padding: 10px;
+}
+
+.profile-icon {
+  cursor: pointer;
+}
+
+.profile-dropdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  z-index: 100;
+}
+
+.profile-dropdown-item {
+  display: block;
+  padding: 8px 12px;
+  color: #333;
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.profile-dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
 /* Mobile Styles */
+@media (min-width: 768px) {
+  .navbar-links.mobile {
+    display: none;
+  }
+
+  .navbar-links {
+    display: flex;
+  }
+}
+
 @media (max-width: 768px) {
   .burger-menu {
     display: block;
@@ -1023,9 +1074,107 @@ textarea {
 
   .navbar-links.mobile {
     display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 
-  .search-icon {
-    font-size: 1.3rem;
+  .profile-dropdown {
+    top: 200px;
+    right: 140px;
+  }
+}
+
+/* Home Page */
+/* General styling for the welcome message and posts grid */
+.home-welcome-message {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Posts grid that will stretch and shrink based on screen size */
+.home-posts-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 20px;
+  width: 100%;
+}
+
+/* Post card design */
+.home-post-card {
+  width: 80%; /* Large horizontal space */
+  max-width: 800px; /* Constrain the max width for large screens */
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.home-post-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Header section for caption and timestamp */
+.home-post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #f9f9f9;
+}
+
+.home-post-caption {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.home-post-time {
+  font-size: 0.875rem;
+  color: #888;
+}
+
+/* Media inside the card */
+.home-post-media img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Tags section at the bottom */
+.home-post-tags {
+  padding: 10px 15px;
+  background-color: #f1f1f1;
+}
+
+.home-post-tag {
+  background-color: #e0e0e0;
+  color: #555;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.875rem;
+  margin-right: 5px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .home-post-card {
+    width: 95%; /* Shrink for smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .home-post-card {
+    width: 100%; /* Occupy full width for very small screens */
+  }
+
+  .home-post-caption {
+    font-size: 0.9rem;
+  }
+
+  .home-post-time {
+    font-size: 0.75rem;
   }
 }

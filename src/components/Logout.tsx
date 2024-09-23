@@ -1,7 +1,13 @@
 import React from "react";
 import { handleLogout } from "@/lib/firebase"; // Adjust the import path as needed
 
-const LogoutButton: React.FC = () => {
+interface LogoutButtonProps {
+  className?: string; // Add className as an optional prop
+}
+
+const LogoutButton: React.FC<LogoutButtonProps> = ({
+  className = "logout-button",
+}) => {
   const onLogout = async () => {
     try {
       await handleLogout();
@@ -12,7 +18,7 @@ const LogoutButton: React.FC = () => {
   };
 
   return (
-    <button onClick={onLogout} className="logout-button">
+    <button onClick={onLogout} className={className}>
       Logout
     </button>
   );

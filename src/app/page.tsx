@@ -19,9 +19,14 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase"; // Import your Firestore instance
 
+type TS = {
+  seconds: number;
+  nanoseconds: number;
+};
+
 type Post = {
   Content: string;
-  CreatedAt: string;
+  CreatedAt: TS;
   LastUpdatedAt: string;
   MediaURL: string;
   PostId: string;
@@ -135,24 +140,35 @@ export default function Home() {
       <Navbar User={user} />
 
       {user ? (
-        <div>
-          <h2>Welcome, {user.email}!</h2>
-          <Link href={`/profile/${user.uid}`}>Go to Profile</Link>
-          <LogoutButton />
+        <div className="home-welcome-message">
+          {/* <h2>Welcome, {user.displayName}!</h2> */}
+          {/* <Link href={`/profile/${user.uid}`}>Go to Profile</Link> */}
+          {/* <LogoutButton /> */}
         </div>
       ) : (
         <p>Explore some random posts below!</p>
       )}
 
-      <br />
-      <br />
-      <div className="home-posts">
+      <div className="home-posts-grid">
         {filteredPosts.length > 0 ? (
-          filteredPosts.map((post, _) => (
-            <div key={post.PostId}>
-              {JSON.stringify(post)}
-              <br />
-              <br />
+          filteredPosts.map((post) => (
+            <div key={post.PostId} className="home-post-card">
+              <div className="home-post-header">
+                <p className="home-post-caption">{post.Content}</p>
+                <p className="home-post-time">
+                  {new Date(post.CreatedAt.seconds * 1000).toLocaleString()}
+                </p>
+              </div>
+              <div className="home-post-media">
+                <img src={post.MediaURL} alt="post" />
+              </div>
+              <div className="home-post-tags">
+                {post.Tags.map((tag, index) => (
+                  <span key={index} className="home-post-tag">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
             </div>
           ))
         ) : (
