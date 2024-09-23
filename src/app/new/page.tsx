@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { storage, useGeneralAuth } from "@/lib/firebase"; // Import Firebase storage
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import Navbar from "@/components/Navbar";
 
 const NewPostPage = () => {
   const [content, setContent] = useState("");
@@ -80,44 +81,47 @@ const NewPostPage = () => {
   };
 
   return (
-    <div className="new-post-container">
-      <h2>Create New Post</h2>
-      <form className="new-post-form" onSubmit={handleSubmit}>
-        <div className="input-group">
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="What's on your mind?"
-            className="content-textarea"
-            required
-          />
-        </div>
+    <div>
+      <Navbar User={user} />
+      <div className="new-post-container">
+        <h2>Create New Post</h2>
+        <form className="new-post-form" onSubmit={handleSubmit}>
+          <div className="input-group">
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="What's on your mind?"
+              className="content-textarea"
+              required
+            />
+          </div>
 
-        <div className="input-group file-upload">
-          <label htmlFor="file-upload" className="custom-file-upload">
-            <span role="img" aria-label="upload">
-              📷
-            </span>{" "}
-            Upload Media
-          </label>
-          <input id="file-upload" type="file" onChange={handleFileChange} />
-          {file && <p className="file-name">Selected: {file.name}</p>}
-        </div>
+          <div className="input-group file-upload">
+            <label htmlFor="file-upload" className="custom-file-upload">
+              <span role="img" aria-label="upload">
+                📷
+              </span>{" "}
+              Upload Media
+            </label>
+            <input id="file-upload" type="file" onChange={handleFileChange} />
+            {file && <p className="file-name">Selected: {file.name}</p>}
+          </div>
 
-        <div className="input-group">
-          <input
-            type="text"
-            value={tags.join(", ")}
-            onChange={(e) => setTags(e.target.value.split(","))}
-            placeholder="Tags (comma separated)"
-            className="tags-input"
-          />
-        </div>
+          <div className="input-group">
+            <input
+              type="text"
+              value={tags.join(", ")}
+              onChange={(e) => setTags(e.target.value.split(","))}
+              placeholder="Tags (comma separated)"
+              className="tags-input"
+            />
+          </div>
 
-        <button className="post-button" type="submit" disabled={loading}>
-          {loading ? "Posting..." : "Post"}
-        </button>
-      </form>
+          <button className="post-button" type="submit" disabled={loading}>
+            {loading ? "Posting..." : "Post"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

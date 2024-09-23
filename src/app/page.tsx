@@ -5,6 +5,8 @@ import { useGeneralAuth } from "@/lib/firebase";
 import { useUserTags } from "@/lib/userInfo"; // Custom hook to get user tags
 import LogoutButton from "@/components/Logout";
 import Link from "next/link";
+import Navbar from "@/components/Navbar";
+
 import {
   collection,
   query,
@@ -130,6 +132,8 @@ export default function Home() {
 
   return (
     <div>
+      <Navbar User={user} />
+
       {user ? (
         <div>
           <h2>Welcome, {user.email}!</h2>
@@ -142,17 +146,19 @@ export default function Home() {
 
       <br />
       <br />
-      {filteredPosts.length > 0 ? (
-        filteredPosts.map((post, _) => (
-          <div key={post.PostId}>
-            {JSON.stringify(post)}
-            <br />
-            <br />
-          </div>
-        ))
-      ) : (
-        <p>No posts available.</p>
-      )}
+      <div className="home-posts">
+        {filteredPosts.length > 0 ? (
+          filteredPosts.map((post, _) => (
+            <div key={post.PostId}>
+              {JSON.stringify(post)}
+              <br />
+              <br />
+            </div>
+          ))
+        ) : (
+          <p>No posts available.</p>
+        )}
+      </div>
     </div>
   );
 }

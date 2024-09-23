@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { doc, getDoc, Timestamp } from "firebase/firestore";
-import { db } from "@/lib/firebase"; // Adjust the path to your firebase config
+import { db, useGeneralAuth } from "@/lib/firebase"; // Adjust the path to your firebase config
 import { useParams } from "next/navigation";
+import Navbar from "@/components/Navbar";
 
 type Post = {
   PostId: string;
@@ -19,6 +20,7 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const id = String(useParams().id); // Get the user ID from the URL
+  const { user } = useGeneralAuth();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -51,72 +53,75 @@ const ProfilePage = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="profile-page">
-      <h2>User Profile</h2>
-      {profile ? (
-        <div className="profile-header">
-          <div className="profile-info">
-            <div className="profile-pic">
-              {/* Placeholder profile picture */}
-              <img
-                src="https://via.placeholder.com/150"
-                alt="Profile picture"
-                className="profile-pic-img"
-              />
-            </div>
-            <div className="profile-details">
-              <p>
-                <strong>{profile.UserName}</strong>
-              </p>
-              <p>{profile.EmailId}</p>
-              <p>
-                <em>{profile.Visibility}</em>
-              </p>
-            </div>
-          </div>
-
-          <div className="aesthetic-line"></div>
-
-          {/* Display User's Posts */}
-          <div className="user-posts-section">
-            <h3>User&apos;s Posts</h3>
-            {posts.length > 0 ? (
-              <div className="post-grid">
-                {posts.map((post) => (
-                  <div className="post-item" key={post.PostId}>
-                    {post.MediaURL ? (
-                      <img
-                        src={post.MediaURL}
-                        alt="Post media"
-                        className="post-media"
-                      />
-                    ) : (
-                      <div className="post-placeholder">
-                        <p>No Media</p>
-                      </div>
-                    )}
-                    <div className="post-details">
-                      <p>
-                        <strong>Tags:</strong> {post.Tags.join(", ")}
-                      </p>
-                      <p>
-                        <strong>Created At:</strong>{" "}
-                        {new Date(
-                          post.CreatedAt.seconds * 1000
-                        ).toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+    <div>
+      <Navbar User={user} />
+      <div className="profile-page">
+        <h2>User Profile</h2>
+        {profile ? (
+          <div className="profile-header">
+            <div className="profile-info">
+              <div className="profile-pic">
+                {/* Placeholder profile picture */}
+                <img
+                  src="https://via.placeholder.com/150"
+                  alt="Profile picture"
+                  className="profile-pic-img"
+                />
               </div>
-            ) : (
-              <p>No posts available.</p>
-            )}
+              <div className="profile-details">
+                <p>
+                  <strong>{profile.UserName}</strong>
+                </p>
+                <p>{profile.EmailId}</p>
+                <p>
+                  <em>{profile.Visibility}</em>
+                </p>
+              </div>
+            </div>
+
+            <div className="aesthetic-line"></div>
+
+            {/* Display User's Posts */}
+            <div className="user-posts-section">
+              <h3>User&apos;s Posts</h3>
+              {posts.length > 0 ? (
+                <div className="post-grid">
+                  {posts.map((post) => (
+                    <div className="post-item" key={post.PostId}>
+                      {post.MediaURL ? (
+                        <img
+                          src={post.MediaURL}
+                          alt="Post media"
+                          className="post-media"
+                        />
+                      ) : (
+                        <div className="post-placeholder">
+                          <p>No Media</p>
+                        </div>
+                      )}
+                      <div className="post-details">
+                        <p>
+                          <strong>Tags:</strong> {post.Tags.join(", ")}
+                        </p>
+                        <p>
+                          <strong>Created At:</strong>{" "}
+                          {new Date(
+                            post.CreatedAt.seconds * 1000
+                          ).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>No posts available.</p>
+              )}
+            </div>
           </div>
-        </div>
-      ) : (
-        <p>No profile data available.</p>
-      )}
+        ) : (
+          <p>No profile data available.</p>
+        )}
+      </div>
     </div>
   );
 };

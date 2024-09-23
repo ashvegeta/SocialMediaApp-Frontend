@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGeneralAuth } from "@/lib/firebase"; // Custom hook to get the authenticated user
 import { db } from "@/lib/firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 
 const PreferencesPage = () => {
   const { user, loading } = useGeneralAuth(); // Get the authenticated user
@@ -82,27 +82,29 @@ const PreferencesPage = () => {
     router.push("/");
   } else {
     return (
-      <div className="preferences-container">
-        <h2>Select Your Preferences</h2>
-        <form className="preferences-form" onSubmit={handleSubmit}>
-          <div className="tag-cloud">
-            {availableTags.map((tag) => (
-              <div
-                key={tag}
-                className={`tag-item ${
-                  selectedTags.includes(tag) ? "selected" : ""
-                }`}
-                onClick={() => handleTagSelection(tag)}
-              >
-                {tag}
-              </div>
-            ))}
-          </div>
+      <div>
+        <div className="preferences-container">
+          <h2>Select Your Preferences</h2>
+          <form className="preferences-form" onSubmit={handleSubmit}>
+            <div className="tag-cloud">
+              {availableTags.map((tag) => (
+                <div
+                  key={tag}
+                  className={`tag-item ${
+                    selectedTags.includes(tag) ? "selected" : ""
+                  }`}
+                  onClick={() => handleTagSelection(tag)}
+                >
+                  {tag}
+                </div>
+              ))}
+            </div>
 
-          <button type="submit" className="save-button">
-            Save Preferences
-          </button>
-        </form>
+            <button type="submit" className="save-button">
+              Save Preferences
+            </button>
+          </form>
+        </div>
       </div>
     );
   }
