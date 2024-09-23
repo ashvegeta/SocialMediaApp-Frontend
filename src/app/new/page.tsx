@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { storage, useGeneralAuth } from "@/lib/firebase"; // Import Firebase storage
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Navbar from "@/components/Navbar";
+import Link from "next/link";
 
 const NewPostPage = () => {
   const [content, setContent] = useState("");
@@ -79,6 +80,14 @@ const NewPostPage = () => {
       setLoading(false);
     }
   };
+
+  if (!user) {
+    return (
+      <div style={{ margin: "2% 3%", fontSize: "20px" }}>
+        Please <Link href="/auth/login">Login</Link> to Upload Posts.
+      </div>
+    );
+  }
 
   return (
     <div>
