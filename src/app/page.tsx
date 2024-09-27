@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import { useGeneralAuth } from "@/lib/firebase";
 import { useUserTags } from "@/lib/userInfo"; // Custom hook to get user tags
-import LogoutButton from "@/components/Logout";
-import Link from "next/link";
 import Navbar from "@/components/Navbar";
 
 import {
@@ -18,6 +16,7 @@ import {
   DocumentData,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase"; // Import your Firestore instance
+import { useNotificationCount } from "@/lib/notificationsCount";
 
 type TS = {
   seconds: number;
@@ -41,6 +40,7 @@ export default function Home() {
   const [lastFetchedUser, setLastFetchedUser] =
     useState<QueryDocumentSnapshot<DocumentData> | null>(null);
   const [loadingPosts, setLoadingPosts] = useState(true); // State to track loading posts
+  const notificationCount = useNotificationCount();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -137,7 +137,7 @@ export default function Home() {
 
   return (
     <div>
-      <Navbar User={user} />
+      <Navbar User={user} notificationCount={notificationCount} />
 
       {user ? (
         <div className="home-welcome-message">

@@ -1,10 +1,44 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot, writeBatch } from "firebase/firestore";
 import { db, useAuth } from "@/lib/firebase"; // Custom hook to get the current user (as implemented before)
 import Navbar from "@/components/Navbar";
 import { useRouter } from "next/navigation";
+
+const markAllNotificationsAsRead = async (userId: string) => {
+  try {
+    // Step 1: Get the user's Notifications array
+    const userDocRef = doc(db, "users", userId);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (!userDocSnap.exists()) {
+      console.log("User document not found.");
+      return;
+    }
+
+    const userData = userDocSnap.data();
+    const notifications = userData.Notifications || [];
+
+    // Step 2: Create a write batch
+    const batch = writeBatch(db);
+
+    // Step 3: Loop through all notifications and mark them as read
+    notifications.forEach((notification: any) => {
+      // Update the IsRead field of each notification
+      notification.IsRead = true;
+    });
+
+    // Update the user's document with the modified notifications array
+    batch.update(userDocRef, { Notifications: notifications });
+
+    // Step 4: Commit the batch
+    await batch.commit();
+    console.log("All notifications marked as read successfully.");
+  } catch (error) {
+    console.error("Error marking notifications as read:", error);
+  }
+};
 
 const NotificationsPage = () => {
   const { user, loading } = useAuth(); // Get the authenticated user
@@ -13,7 +47,7 @@ const NotificationsPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [handledNotifications, setHandledNotifications] = useState<string[]>(
     []
-  ); // Track handled notifications
+  );
   const router = useRouter();
 
   useEffect(() => {
@@ -57,6 +91,13 @@ const NotificationsPage = () => {
     // Cleanup the listener on component unmount
     return () => unsubscribe();
   }, [user, loading]); // Only run when user or loading state changes
+
+  // Use this function to mark all notifications as read when the component mounts
+  useEffect(() => {
+    if (user) {
+      markAllNotificationsAsRead(user.uid);
+    }
+  }, [user, loadingNotifications]);
 
   const handleAcceptRequest = async (
     fromUserId: string,
@@ -112,8 +153,8 @@ const NotificationsPage = () => {
       );
       if (response.ok) {
         console.log("Connection deleted successfully!");
-        // Update the state to mark the notification as handled
 
+        // Update the state to mark the notification as handled
         const trailRes = await fetch(
           process.env.NEXT_PUBLIC_APPENGINE_URL + "/notification/delete",
           {

@@ -5,6 +5,7 @@ import { doc, getDoc, Timestamp } from "firebase/firestore";
 import { db, useGeneralAuth } from "@/lib/firebase"; // Adjust the path to your firebase config
 import { useParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
+import { useNotificationCount } from "@/lib/notificationsCount";
 
 type Post = {
   PostId: string;
@@ -21,6 +22,7 @@ const ProfilePage = () => {
   const [error, setError] = useState<string | null>(null);
   const id = String(useParams().id); // Get the user ID from the URL
   const { user } = useGeneralAuth();
+  const notificationCount = useNotificationCount();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -54,7 +56,7 @@ const ProfilePage = () => {
 
   return (
     <div>
-      <Navbar User={user} />
+      <Navbar User={user} notificationCount={notificationCount} />
       <div className="profile-page">
         <h2>User Profile</h2>
         {profile ? (

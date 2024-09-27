@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import { useGeneralAuth } from "@/lib/firebase";
+import { useNotificationCount } from "@/lib/notificationsCount";
 
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -10,6 +11,7 @@ const SearchPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { user } = useGeneralAuth(); // Get the authenticated user
+  const notificationCount = useNotificationCount();
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +44,7 @@ const SearchPage = () => {
 
   return (
     <div>
-      <Navbar User={user} />
+      <Navbar User={user} notificationCount={notificationCount} />
       <div className="search-page-container">
         <h2>Search Users</h2>
         <form onSubmit={handleSearch} className="search-form">

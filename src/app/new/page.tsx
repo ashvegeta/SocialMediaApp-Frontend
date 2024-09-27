@@ -5,6 +5,7 @@ import { storage, useGeneralAuth } from "@/lib/firebase"; // Import Firebase sto
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
+import { useNotificationCount } from "@/lib/notificationsCount";
 
 const NewPostPage = () => {
   const [content, setContent] = useState("");
@@ -12,6 +13,7 @@ const NewPostPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const { user } = useGeneralAuth();
+  const notificationCount = useNotificationCount();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -91,7 +93,7 @@ const NewPostPage = () => {
 
   return (
     <div>
-      <Navbar User={user} />
+      <Navbar User={user} notificationCount={notificationCount} />
       <div className="new-post-container">
         <h2>Create New Post</h2>
         <form className="new-post-form" onSubmit={handleSubmit}>

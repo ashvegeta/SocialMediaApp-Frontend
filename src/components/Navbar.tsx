@@ -12,9 +12,14 @@ import Link from "next/link";
 import { User } from "firebase/auth";
 import LogoutButton from "./Logout"; // Assuming LogoutButton is imported here
 
-const Navbar: React.FC<{ User: User | null; profilePicUrl?: string }> = ({
+const Navbar: React.FC<{
+  User: User | null;
+  profilePicUrl?: string;
+  notificationCount?: number;
+}> = ({
   User,
   profilePicUrl,
+  notificationCount = 0, // Accept notification count
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false); // State for profile dropdown
@@ -77,7 +82,14 @@ const Navbar: React.FC<{ User: User | null; profilePicUrl?: string }> = ({
               {isMobileMenuOpen ? (
                 "Notification"
               ) : (
-                <IoIosNotifications size={25} />
+                <div style={{ position: "relative" }}>
+                  <IoIosNotifications size={25} />
+                  {notificationCount > 0 && (
+                    <span className="notification-counter">
+                      {notificationCount}
+                    </span>
+                  )}
+                </div>
               )}
             </Link>
           </li>
@@ -117,21 +129,25 @@ const Navbar: React.FC<{ User: User | null; profilePicUrl?: string }> = ({
                 <LogoutButton className="profile-dropdown-item" />
               </div>
             )}
-          </li>
 
-          {User && isProfileDropdownOpen && isMobileMenuOpen && (
-            <li
-              style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-            >
-              <Link
-                href={`/profile/${User?.uid}`}
-                className="profile-dropdown-item"
+            {User && isProfileDropdownOpen && isMobileMenuOpen && (
+              <li
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px",
+                }}
               >
-                Go to Profile
-              </Link>
-              <LogoutButton className="profile-dropdown-item" />
-            </li>
-          )}
+                <Link
+                  href={`/profile/${User?.uid}`}
+                  className="profile-dropdown-item"
+                >
+                  Go to Profile
+                </Link>
+                <LogoutButton className="profile-dropdown-item" />
+              </li>
+            )}
+          </li>
         </ul>
       </div>
     </nav>
