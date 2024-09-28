@@ -5,6 +5,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, useGeneralAuth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Loading from "@/components/Loading";
 
 const SignUpPage = () => {
   const [email, setEmail] = useState<string>("");
@@ -13,7 +14,6 @@ const SignUpPage = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const router = useRouter();
-  // const LOCAL_STORAGE_KEY = String(process.env.NEXT_PUBLIC_LOCAL_USER_KEY);
   const { user, loading } = useGeneralAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -57,12 +57,6 @@ const SignUpPage = () => {
         throw new Error("Failed to save user data to the backend");
       }
 
-      // add to localstorage and push to protected page router
-      // localStorage.setItem(
-      //   LOCAL_STORAGE_KEY,
-      //   JSON.stringify(userCredential.user)
-      // );
-
       // If successful, clear the form and display a success message
       setEmail("");
       setPassword("");
@@ -71,14 +65,13 @@ const SignUpPage = () => {
       console.log("User signed up successfully:", userCredential.user);
       router.push("/preferences");
     } catch (err: any) {
-      // localStorage.removeItem(LOCAL_STORAGE_KEY);
       setError(err.message);
       console.error("Error signing up:", err);
     }
   };
 
   if (loading) {
-    return <div>loading...</div>;
+    return <Loading />;
   }
 
   if (user) {
@@ -88,6 +81,9 @@ const SignUpPage = () => {
       <div className="signup-container">
         <div className="signup-card">
           <h2 className="signup-title">Sign Up</h2>
+
+          {error && <p className="signup error-message">{error}</p>}
+
           <form onSubmit={handleSubmit} id="signup-form">
             <div className="form-group" id="signup-username">
               <label> User Name </label>
@@ -95,7 +91,6 @@ const SignUpPage = () => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                // placeholder="Username"
                 required
                 className="form-input"
               />
@@ -107,7 +102,6 @@ const SignUpPage = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                // placeholder="Email"
                 required
                 className="form-input"
               />
@@ -119,7 +113,6 @@ const SignUpPage = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                // placeholder="Password"
                 required
                 className="form-input"
               />
@@ -131,7 +124,6 @@ const SignUpPage = () => {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                // placeholder="Confirm Password"
                 required
                 className="form-input"
               />

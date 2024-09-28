@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth, useGeneralAuth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/Loading";
 
 const ResetPasswordPage = () => {
   const { user, loading } = useGeneralAuth(); // Use the custom auth hook
@@ -43,13 +44,16 @@ const ResetPasswordPage = () => {
 
   // While checking for auth state, show a loading state
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
   return (
     <div className="reset-container">
       <div className="reset-card">
         <h3 className="reset-title">Reset Your Password</h3>
+
+        {error && <p className="signup error-message">{error}</p>}
+
         <form onSubmit={handleSubmit} id="reset-form">
           <div className="form-group" id="reset-email">
             <label>Email</label>

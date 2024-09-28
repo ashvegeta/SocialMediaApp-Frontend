@@ -133,6 +133,7 @@ const Navbar: React.FC<{
             {User && isProfileDropdownOpen && isMobileMenuOpen && (
               <li
                 style={{
+                  marginTop: "10px",
                   display: "flex",
                   flexDirection: "column",
                   gap: "10px",

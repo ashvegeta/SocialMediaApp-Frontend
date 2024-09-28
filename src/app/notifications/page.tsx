@@ -5,6 +5,7 @@ import { doc, getDoc, onSnapshot, writeBatch } from "firebase/firestore";
 import { db, useAuth } from "@/lib/firebase"; // Custom hook to get the current user (as implemented before)
 import Navbar from "@/components/Navbar";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/Loading";
 
 const markAllNotificationsAsRead = async (userId: string) => {
   try {
@@ -182,7 +183,7 @@ const NotificationsPage = () => {
     }
   };
 
-  if (user && (loading || loadingNotifications)) return <p>Loading...</p>;
+  if (user && (loading || loadingNotifications)) return <Loading />;
   if (error) return <p>{error}</p>;
   if (!user) return null;
 

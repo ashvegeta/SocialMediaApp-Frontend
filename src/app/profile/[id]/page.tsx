@@ -6,6 +6,7 @@ import { db, useGeneralAuth } from "@/lib/firebase"; // Adjust the path to your 
 import { useParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import { useNotificationCount } from "@/lib/notificationsCount";
+import Loading from "@/components/Loading";
 
 type Post = {
   PostId: string;
@@ -51,7 +52,7 @@ const ProfilePage = () => {
     fetchProfile();
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading />;
   if (error) return <p>{error}</p>;
 
   return (

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useGeneralAuth } from "@/lib/firebase"; // Custom hook to get the authenticated user
 import { db } from "@/lib/firebase";
 import { doc, updateDoc } from "firebase/firestore";
+import Loading from "@/components/Loading";
 
 const PreferencesPage = () => {
   const { user, loading } = useGeneralAuth(); // Get the authenticated user
@@ -76,8 +77,7 @@ const PreferencesPage = () => {
   };
 
   // While checking preferences or loading user
-  if (loading) return <p>Loading...</p>;
-
+  if (loading) return <Loading />;
   if (!user) {
     router.push("/");
   } else {

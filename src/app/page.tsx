@@ -17,6 +17,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase"; // Import your Firestore instance
 import { useNotificationCount } from "@/lib/notificationsCount";
+import Loading from "@/components/Loading";
 
 type TS = {
   seconds: number;
@@ -133,21 +134,11 @@ export default function Home() {
     fetchPosts();
   }, [user, loading, userTags]);
 
-  if (loading || loadingPosts) return <div>Loading...</div>;
+  if (loading || loadingPosts) return <Loading />;
 
   return (
     <div>
       <Navbar User={user} notificationCount={notificationCount} />
-
-      {user ? (
-        <div className="home-welcome-message">
-          {/* <h2>Welcome, {user.displayName}!</h2> */}
-          {/* <Link href={`/profile/${user.uid}`}>Go to Profile</Link> */}
-          {/* <LogoutButton /> */}
-        </div>
-      ) : (
-        <p>Explore some random posts below!</p>
-      )}
 
       <div className="home-posts-grid">
         {filteredPosts.length > 0 ? (

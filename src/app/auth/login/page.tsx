@@ -1,15 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, useGeneralAuth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/Loading";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // For error message state
   const router = useRouter();
   const { user, loading } = useGeneralAuth();
 
@@ -25,12 +26,13 @@ const LoginPage = () => {
       console.log("User signed in successfully\n" + userCredential);
       router.push("/");
     } catch (error) {
-      console.log("Error signing in " + error);
+      console.error("Error signing in: ", error);
+      setErrorMessage("Invalid email or password. Please try again."); // Set error message
     }
   };
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return <Loading />;
   }
 
   if (user) {
@@ -40,6 +42,11 @@ const LoginPage = () => {
       <div className="login-container">
         <div className="login-card">
           <h3 className="login-title">Welcome Back</h3>
+
+          {/* Display error message if it exists */}
+          {errorMessage && (
+            <p className="login error-message">{errorMessage}</p>
+          )}
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
