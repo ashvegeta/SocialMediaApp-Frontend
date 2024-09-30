@@ -6,6 +6,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { useNotificationCount } from "@/lib/notificationsCount";
+import { useRouter } from "next/navigation";
 
 const NewPostPage = () => {
   const [content, setContent] = useState("");
@@ -14,6 +15,7 @@ const NewPostPage = () => {
   const [loading, setLoading] = useState(false);
   const { user } = useGeneralAuth();
   const notificationCount = useNotificationCount();
+  const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -76,6 +78,8 @@ const NewPostPage = () => {
       }
 
       console.log("Post created successfully");
+
+      router.push(`profile/${user.uid}`);
     } catch (error) {
       console.error("Error creating post:", error);
     } finally {

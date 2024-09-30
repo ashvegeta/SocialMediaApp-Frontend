@@ -136,7 +136,7 @@ const NotificationsPage = () => {
 
   const handleDeleteRequest = async (
     fromUserId: string,
-    notificationId: string
+    notificationId: string | null
   ) => {
     try {
       const response = await fetch(
@@ -155,26 +155,28 @@ const NotificationsPage = () => {
       if (response.ok) {
         console.log("Connection deleted successfully!");
 
-        // Update the state to mark the notification as handled
-        const trailRes = await fetch(
-          process.env.NEXT_PUBLIC_APPENGINE_URL + "/notification/delete",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              UserId: user?.uid,
-              NID: notificationId,
-            }),
+        if (notificationId) {
+          // Update the state to mark the notification as handled
+          const trailRes = await fetch(
+            process.env.NEXT_PUBLIC_APPENGINE_URL + "/notification/delete",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                UserId: user?.uid,
+                NID: notificationId,
+              }),
+            }
+          );
+
+          if (!trailRes.ok) {
+            console.error("Error deleting notification " + trailRes.body);
           }
-        );
 
-        if (!trailRes.ok) {
-          console.error("Error deleting notification " + trailRes.body);
+          setHandledNotifications((prev) => [...prev, notificationId]);
         }
-
-        setHandledNotifications((prev) => [...prev, notificationId]);
       } else {
         console.error("Error deleting connection");
       }

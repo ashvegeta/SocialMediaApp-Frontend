@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { doc, getDoc, Timestamp } from "firebase/firestore";
-import { db, useGeneralAuth } from "@/lib/firebase"; // Adjust the path to your firebase config
+import { db, useGeneralAuth } from "@/lib/firebase";
 import { useParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import { useNotificationCount } from "@/lib/notificationsCount";
@@ -18,19 +18,19 @@ type Post = {
 
 const ProfilePage = () => {
   const [profile, setProfile] = useState<any>(null);
-  const [posts, setPosts] = useState<Post[]>([]); // State to hold the user's posts
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const id = String(useParams().id); // Get the user ID from the URL
+  const id = String(useParams().id);
   const { user } = useGeneralAuth();
   const notificationCount = useNotificationCount();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        if (!id) return; // No ID available
+        if (!id) return;
 
-        const docRef = doc(db, "users", id); // Firestore collection 'users' and document 'id'
+        const docRef = doc(db, "users", id);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -53,18 +53,17 @@ const ProfilePage = () => {
   }, [id]);
 
   if (loading) return <Loading />;
-  if (error) return <p>{error}</p>;
+  if (error) return <p className="error-message">{error}</p>;
 
   return (
     <div>
       <Navbar User={user} notificationCount={notificationCount} />
       <div className="profile-page">
-        <h2>User Profile</h2>
+        <h2 className="profile-title">User Profile</h2>
         {profile ? (
           <div className="profile-header">
             <div className="profile-info">
               <div className="profile-pic">
-                {/* Placeholder profile picture */}
                 <img
                   src="https://via.placeholder.com/150"
                   alt="Profile picture"
@@ -72,11 +71,11 @@ const ProfilePage = () => {
                 />
               </div>
               <div className="profile-details">
-                <p>
+                <p className="profile-username">
                   <strong>{profile.UserName}</strong>
                 </p>
-                <p>{profile.EmailId}</p>
-                <p>
+                <p className="profile-email">{profile.EmailId}</p>
+                <p className="profile-visibility">
                   <em>{profile.Visibility}</em>
                 </p>
               </div>
@@ -84,7 +83,7 @@ const ProfilePage = () => {
 
             <div className="aesthetic-line"></div>
 
-            {/* Display User's Posts */}
+            {/* User's Posts Section */}
             <div className="user-posts-section">
               <h3>User&apos;s Posts</h3>
               {posts.length > 0 ? (
@@ -103,11 +102,17 @@ const ProfilePage = () => {
                         </div>
                       )}
                       <div className="post-details">
-                        <p>
-                          <strong>Tags:</strong> {post.Tags.join(", ")}
-                        </p>
-                        <p>
-                          <strong>Created At:</strong>{" "}
+                        <p className="post-content">{post.Content}</p>
+                        <div className="tags-container">
+                          <span className="tags">
+                            {post.Tags.map((tag, index) => (
+                              <span className="tag" key={index}>
+                                {tag}
+                              </span>
+                            ))}
+                          </span>
+                        </div>
+                        <p className="post-date">
                           {new Date(
                             post.CreatedAt.seconds * 1000
                           ).toLocaleString()}
