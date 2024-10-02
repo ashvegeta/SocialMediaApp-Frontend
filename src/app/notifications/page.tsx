@@ -6,6 +6,7 @@ import { db, useAuth } from "@/lib/firebase"; // Custom hook to get the current 
 import Navbar from "@/components/Navbar";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
+import PopupPost from "@/components/PopupPost";
 
 const markAllNotificationsAsRead = async (userId: string) => {
   try {
@@ -49,6 +50,11 @@ const NotificationsPage = () => {
   const [handledNotifications, setHandledNotifications] = useState<string[]>(
     []
   );
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedMediaPost, setSelectedMediaPost] = useState({
+    userID: "",
+    postID: "",
+  });
   const router = useRouter();
 
   useEffect(() => {
@@ -99,6 +105,16 @@ const NotificationsPage = () => {
       markAllNotificationsAsRead(user.uid);
     }
   }, [user, loadingNotifications]);
+
+  // Function to handle showing the popup for media type notifications
+  const handleMediaClick = (userID: string, postID: string) => {
+    setSelectedMediaPost({ userID, postID });
+    setShowPopup(true);
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+  };
 
   const handleAcceptRequest = async (
     fromUserId: string,
@@ -197,7 +213,19 @@ const NotificationsPage = () => {
         {notifications.length > 0 ? (
           <ul className="notification-list">
             {notifications.map((notification, index) => (
-              <li key={index} className="notification-item">
+              <li
+                key={index}
+                className="notification-item"
+                onClick={() => {
+                  if (notification.CType == "media") {
+                    handleMediaClick(
+                      notification.MetaData.From,
+                      notification.MetaData.PostID
+                    );
+                  }
+                }}
+              >
+                {/* Check for connection request type */}
                 {notification.CType === "connRequest" ? (
                   <div className="notification-request">
                     {handledNotifications.includes(notification.NID) ? (
@@ -239,6 +267,39 @@ const NotificationsPage = () => {
                       {new Date(notification.TimeStamp).toLocaleString()}
                     </p>
                   </div>
+                ) : notification.CType === "connAccepted" ? (
+                  /* Check for connection accepted type */
+                  <div className="notification-detail">
+                    <p className="notification-meta">
+                      {notification.MetaData.UserName} has accepted your
+                      connection request.
+                    </p>
+                    <p className="notification-timestamp">
+                      {new Date(notification.TimeStamp).toLocaleString()}
+                    </p>
+                  </div>
+                ) : notification.CType === "media" ? (
+                  /* Check for media type */
+                  <div className="notification-detail">
+                    <p className="notification-meta">
+                      {notification.Content}{" "}
+                      {/* e.g., "User X has uploaded a new post" */}
+                    </p>
+                    {/* <button
+                      className="notification-btn media-btn"
+                      onClick={() =>
+                        handleMediaClick(
+                          notification.MetaData.From,
+                          notification.MetaData.PostID
+                        )
+                      }
+                    >
+                      View Post
+                    </button> */}
+                    <p className="notification-timestamp">
+                      {new Date(notification.TimeStamp).toLocaleString()}
+                    </p>
+                  </div>
                 ) : (
                   <div className="notification-detail">
                     <p className="notification-meta">{notification.Content}</p>
@@ -254,6 +315,15 @@ const NotificationsPage = () => {
           <p className="notification-empty">No notifications found.</p>
         )}
       </div>
+
+      {/* Embed the PopupPost component when a media notification is clicked */}
+      {showPopup && (
+        <PopupPost
+          userID={selectedMediaPost.userID}
+          postID={selectedMediaPost.postID}
+          onClose={closePopup}
+        />
+      )}
     </div>
   );
 };

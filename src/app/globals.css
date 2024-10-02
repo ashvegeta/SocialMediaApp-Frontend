@@ -877,6 +877,7 @@ textarea {
 }
 
 .notification-item:hover {
+  cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -892,7 +893,7 @@ textarea {
 .notification-meta {
   font-size: 1.1rem;
   color: #555;
-  flex-grow: 1;
+  flex-grow: 0.8;
 }
 
 .notification-actions {
@@ -1420,5 +1421,99 @@ textarea {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+/* Popup Post Page */
+/* Ensure the overlay scales well for mobile screens */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* Darker background for better visibility */
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 15px; /* Add padding to avoid the popup sticking to the edges */
+}
+
+/* Responsive width and better styling for modern design */
+.popup-content {
+  background: white;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 800px; /* Max width to ensure it doesn't get too wide */
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Cross button position and sizing adjustments */
+.popup-close-button {
+  position: fixed;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 4rem; /* Increase size for better visibility */
+  cursor: pointer;
+  color: #333; /* Dark color for modern design */
+}
+
+/* Image styling with improved scaling */
+.popup-image-wrapper img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  max-height: 500px; /* Ensure images don't get too tall */
+  object-fit: cover;
+}
+
+/* Content details spacing */
+.popup-details {
+  margin-top: 20px;
+}
+
+/* Tags styling */
+.popup-tags span {
+  background-color: #e0e0e0; /* Softer color for tags */
+  padding: 6px 10px;
+  border-radius: 8px;
+  margin-right: 8px;
+  font-size: 14px; /* Slightly larger for readability */
+  color: #333;
+}
+
+/* Timestamp style */
+.popup-timestamp {
+  margin-top: 20px;
+  font-size: 13px;
+  color: #777;
+}
+
+/* Responsive design for mobile screens */
+@media (max-width: 600px) {
+  .popup-content {
+    width: 100%; /* Take most of the width on smaller screens */
+    padding: 2%;
+  }
+
+  .popup-image-wrapper img {
+    min-height: 270px;
+  }
+
+  .popup-overlay {
+    padding: 10px;
+  }
+
+  .popup-close-button {
+    top: 10px;
+    right: 15px;
+    font-size: 3rem;
   }
 }
