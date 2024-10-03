@@ -36,7 +36,7 @@ const ProfilePage = () => {
         if (docSnap.exists()) {
           const userData = docSnap.data();
           setProfile(userData); // Set profile data
-          setPosts(userData.Posts || []); // Set the user's posts (default to an empty array if none)
+          setPosts((userData.Posts || []).reverse()); // Reverse the posts for newer-first order
         } else {
           console.log("No such user profile exists!");
           setError("User profile not found");

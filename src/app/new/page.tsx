@@ -77,11 +77,37 @@ const NewPostPage = () => {
         throw new Error("Failed to create post");
       }
 
-      console.log("Post created successfully");
+      // Extract data from the post creation response
+      const postData = await response.json();
 
+      console.log(postData);
+
+      // Now, send notifications to all connected users
+      const notificationResponse = await fetch(
+        process.env.NEXT_PUBLIC_APPENGINE_URL + "/notification/sendallconn",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            UserID: postData.UserId,
+            PostID: postData.PostId,
+            UserName: user.displayName, // Assuming your post response contains the username
+          }),
+        }
+      );
+
+      if (!notificationResponse.ok) {
+        console.error("Failed to send notifications to some/all users");
+      } else {
+        console.log("Notifications sent successfully");
+      }
+
+      // Redirect to the profile page after the post is created successfully
       router.push(`profile/${user.uid}`);
     } catch (error) {
-      console.error("Error creating post:", error);
+      console.error("Error creating post or sending notifications:", error);
     } finally {
       setLoading(false);
     }
@@ -125,7 +151,7 @@ const NewPostPage = () => {
           <div className="input-group">
             <input
               type="text"
-              value={tags.join(", ")}
+              value={tags.join(",")}
               onChange={(e) => setTags(e.target.value.split(","))}
               placeholder="Tags (comma separated)"
               className="tags-input"

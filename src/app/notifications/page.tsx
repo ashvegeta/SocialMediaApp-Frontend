@@ -78,7 +78,10 @@ const NotificationsPage = () => {
           const userData = docSnap.data(); // Get the user data
 
           if (userData && userData.Notifications) {
-            setNotifications(userData.Notifications); // Set notifications from the user's field
+            const sortedNotifications = [...userData.Notifications].sort(
+              (a, b) => b.TimeStamp - a.TimeStamp // Sort by timestamp, newest first
+            );
+            setNotifications(sortedNotifications); // Set sorted notifications
           } else {
             setNotifications([]); // No notifications found
           }

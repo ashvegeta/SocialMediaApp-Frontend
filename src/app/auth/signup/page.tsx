@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, useGeneralAuth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -32,6 +32,11 @@ const SignUpPage = () => {
         email,
         password
       );
+
+      // Set the display name to the username provided
+      await updateProfile(userCredential.user, {
+        displayName: username,
+      });
 
       // If user creation is successful, send additional data to backend
       const userId = userCredential.user.uid; // Firebase generated user ID
