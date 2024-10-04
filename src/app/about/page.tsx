@@ -44,7 +44,7 @@ const AboutPage = () => {
           </ul>
           <h2>System Design Highlights</h2>
           <p>
-            YASMP's design balances ease of development and deployment
+            YASMP&apos;s design balances ease of development and deployment
             scalability. It utilizes modern cloud technologies like Google Cloud
             Platform and Firebase, with automated CI/CD pipelines for continuous
             deployment and monitoring.
